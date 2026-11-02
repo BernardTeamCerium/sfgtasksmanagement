@@ -49,13 +49,22 @@ The app works on any host that runs Node or Docker and has a persistent disk, su
 
 ## Branding
 
-Brand settings live in `public/brand/`:
+The branding comes from the official Sibley Financial Group crest logo. Brand files live in `public/brand/`:
 
-- `brand.css` holds the colour and font tokens: navy, gold, cream, and the display and body fonts.
-- `logo.svg` is the full logo, shown on the navy header and the sign-in screen.
-- `logo-mark.svg` is the favicon.
+- `logo.png` is the full crest and wordmark, shown on the sign-in screen. It has a transparent background.
+- `crest.png` is the crest alone, shown in the header next to the SIBLEY / FINANCIAL GROUP wordmark.
+- `favicon.png` is the browser-tab icon.
+- `brand.css` holds the colour and font tokens, sampled from the logo:
 
-> The logo files in the repo are **placeholders**. Replace them with the official Sibley Financial Group logo files from sibleyfinancialgroup.com, and change the colour values in `brand.css` to match the official palette. If the logo is a PNG, update the `src` attributes in `public/index.html`. Use a light or white version of the logo, because it sits on the navy header.
+| Token | Colour | Taken from |
+| --- | --- | --- |
+| `--brand-navy` | `#0B2F5B` | "SIBLEY" wordmark: headings, primary buttons |
+| `--brand-blue` | `#1A4AA8` | Royal blue of the shield: accents, links, focus |
+| `--brand-red` | `#D0101A` | Red of the shield: New Task button, header stripe |
+| `--brand-silver` | `#A9B0BB` | Helm, scrollwork and banner |
+| `--brand-charcoal` | `#2B2B2B` | "FINANCIAL GROUP" |
+
+Headings use **Cinzel**, a free Google Font close to the logo's classical serif. Body text uses **Inter**.
 
 ## Project layout
 

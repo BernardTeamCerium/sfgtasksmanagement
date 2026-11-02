@@ -1,16 +1,20 @@
 /*
- * Sibley Financial Group brand tokens.
- * Edit these to match the official palette from sibleyfinancialgroup.com.
- * Replace logo.svg (full lockup, used on dark header) and logo-mark.svg (favicon)
- * with the official files — any .svg or .png works; update the src in index.html if
- * you change the filename.
+ * Sibley Financial Group brand tokens — sampled from the official crest logo.
+ *   logo.png   full crest + wordmark (login screen)
+ *   crest.png  crest only (header)
+ *   favicon.png
  */
 :root {
-  --brand-navy: #0f2a47;        /* primary */
-  --brand-navy-dark: #0a1d33;   /* header / hover */
-  --brand-gold: #c5a253;        /* accent */
-  --brand-gold-dark: #a8873b;
-  --brand-cream: #f7f4ee;       /* page background */
-  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --brand-navy: #0b2f5b;        /* "SIBLEY" wordmark */
+  --brand-navy-dark: #071f3d;
+  --brand-blue: #1a4aa8;        /* royal blue of the shield */
+  --brand-blue-dark: #12387f;
+  --brand-red: #d0101a;         /* red of the shield */
+  --brand-red-dark: #a80c14;
+  --brand-silver: #a9b0bb;      /* helm, scrollwork & banner */
+  --brand-silver-light: #e6e9ee;
+  --brand-charcoal: #2b2b2b;    /* "FINANCIAL GROUP" */
+  --brand-bg: #f4f6f9;          /* page background */
+  --font-display: "Cinzel", "Trajan Pro", Georgia, "Times New Roman", serif;
   --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }

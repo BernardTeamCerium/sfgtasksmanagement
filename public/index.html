@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SFG Task Manager</title>
-  <link rel="icon" href="brand/logo-mark.svg" type="image/svg+xml" />
+  <link rel="icon" href="brand/favicon.png" type="image/png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cinzel:wght@500;600;700&display=swap" />
   <link rel="stylesheet" href="brand/brand.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -14,7 +14,7 @@
   <!-- Sign-in (only shown when TEAM_PASSCODE is set on the server) -->
   <section id="login" class="login" hidden>
     <form id="loginForm" class="login-card">
-      <img class="login-logo" src="brand/logo.svg" alt="Sibley Financial Group" />
+      <img class="login-logo" src="brand/logo.png" alt="Sibley Financial Group" />
       <h1>Team Task Manager</h1>
       <p class="muted">Enter the team passcode to continue.</p>
       <input id="passcode" type="password" autocomplete="current-password" placeholder="Team passcode" required />
@@ -26,7 +26,11 @@
   <div id="app" hidden>
     <header class="topbar">
       <div class="brand">
-        <img class="brand-logo" src="brand/logo.svg" alt="Sibley Financial Group" />
+        <img class="brand-crest" src="brand/crest.png" alt="" />
+        <div class="wordmark" aria-label="Sibley Financial Group">
+          <span class="wordmark-name">SIBLEY</span>
+          <span class="wordmark-sub">FINANCIAL GROUP</span>
+        </div>
         <span class="brand-divider"></span>
         <span class="brand-app">Project Management</span>
       </div>
@@ -35,9 +39,9 @@
           <span>I am</span>
           <select id="me"></select>
         </label>
-        <button class="btn btn-ghost-light" id="settingsBtn" title="Team & data settings">Settings</button>
-        <button class="btn btn-ghost-light" id="logoutBtn" hidden>Sign out</button>
-        <button class="btn btn-gold" id="newTaskBtn">+ New Task</button>
+        <button class="btn" id="settingsBtn" title="Team & data settings">Settings</button>
+        <button class="btn" id="logoutBtn" hidden>Sign out</button>
+        <button class="btn btn-accent" id="newTaskBtn">+ New Task</button>
       </div>
     </header>
 
