@@ -60,7 +60,16 @@ docker build -t sfg-tasks .
 docker run -d -p 3000:3000 -v sfg-data:/data -e TEAM_PASSCODE=... -e SESSION_SECRET=... sfg-tasks
 ```
 
-### Hosting
+### Go live on Render (recommended)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/BernardTeamCerium/sfgtasksmanagement)
+
+1. Click the button above and sign in to Render with GitHub.
+2. When asked, enter a **TEAM_PASSCODE**. This is the passcode the team will use to sign in.
+3. Click **Apply**. In a couple of minutes Render gives you a live link, like `https://sfg-task-manager.onrender.com`.
+
+The setup comes from `render.yaml`. It uses Render's Starter plan (about $7 a month) with a 1 GB disk (about $0.25 a month), so tasks and numbers survive restarts. Every push to GitHub redeploys the app automatically. To use your own address, such as `tasks.sibleyfinancialgroup.com`, add it under **Settings → Custom Domains** in Render.
+
 
 The app works on any host that runs Node or Docker and has a persistent disk, such as Render, Railway, Fly.io or a small VPS. Mount the persistent disk at `DATA_DIR`. Put it behind HTTPS so the sign-in cookie is sent securely.
 

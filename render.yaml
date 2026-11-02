@@ -1,0 +1,25 @@
+# Render Blueprint — one-click deploy of the SFG Task Manager.
+# A persistent disk keeps tasks and production numbers across restarts and deploys
+# (disks need a paid instance type; the free tier would lose data on every restart).
+services:
+  - type: web
+    name: sfg-task-manager
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/session
+    autoDeploy: true
+    envVars:
+      - key: TEAM_PASSCODE      # you'll be asked for this when you create the service
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DATA_DIR
+        value: /var/data
+      - key: NODE_VERSION
+        value: "22"
+    disk:
+      name: sfg-data
+      mountPath: /var/data
+      sizeGB: 1
