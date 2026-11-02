@@ -21,6 +21,16 @@ const MAX_BODY = 1024 * 1024;
 const STATUSES = ['Not Started', 'In Progress', 'Waiting', 'Completed'];
 const PRIORITIES = ['High', 'Medium', 'Low'];
 
+// Production metrics, in funnel order. Edit labels here; keys are stored in data.
+const METRICS = [
+  { key: 'leads', label: 'Leads', unit: 'count' },
+  { key: 'connects', label: 'Good Connects', unit: 'count' },
+  { key: 'appointments', label: 'Appointments', unit: 'count' },
+  { key: 'sales', label: 'Sales', unit: 'count' },
+  { key: 'premium', label: 'Premium', unit: 'usd' },
+];
+const METRIC_KEYS = METRICS.map((m) => m.key);
+
 // ---------- storage ----------
 
 function loadState() {
@@ -43,6 +53,11 @@ function saveState(s) {
 }
 
 let state = loadState();
+if (!state.production) {
+  // October goal of 40 good connects comes from the team's project sheet.
+  state.production = { entries: [], goals: { '2026-10': { connects: 40 } } };
+  saveState(state);
+}
 
 function commit() {
   state.version = (state.version || 0) + 1;
@@ -148,7 +163,54 @@ function publicState() {
     tasks: state.tasks,
     statuses: STATUSES,
     priorities: PRIORITIES,
+    metrics: METRICS,
+    production: state.production,
   };
+}
+
+function num(v) {
+  if (v === '' || v === null || v === undefined) return null;
+  const n = Number(v);
+  return Number.isFinite(n) && n >= 0 ? Math.round(n * 100) / 100 : null;
+}
+
+function cleanEntry(input, existing = {}) {
+  const e = { ...existing };
+  if ('date' in input) e.date = date(input.date);
+  for (const k of METRIC_KEYS) if (k in input) e[k] = num(input[k]);
+  if ('note' in input) e.note = str(input.note, 1000);
+  if ('author' in input) e.author = str(input.author, 100);
+  return e;
+}
+
+// Clearly-labelled demo numbers so the dashboard can be previewed before real data is entered.
+function sampleEntries() {
+  const out = [];
+  const months = 6;
+  const now = new Date();
+  let seed = 7;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  for (let i = months; i >= 0; i--) {
+    const y = now.getFullYear(), m = now.getMonth() - i;
+    const first = new Date(y, m, 1);
+    const last = i === 0 ? now : new Date(y, m + 1, 0);
+    const growth = 1 + (months - i) * 0.08;
+    for (let d = new Date(first); d <= last; d.setDate(d.getDate() + 1)) {
+      if (d.getDay() !== 5 && !(d.getTime() === last.getTime())) continue; // Fridays + month end
+      const days = d.getDay() === 5 ? 7 : Math.max(1, ((d.getDate() - 1) % 7) + 1);
+      const f = (days / 7) * growth;
+      const leads = Math.round((34 + rnd() * 12) * f);
+      const connects = Math.round(leads * (0.12 + rnd() * 0.03));
+      const appointments = Math.round(connects * (0.45 + rnd() * 0.15));
+      const sales = Math.round(appointments * (0.3 + rnd() * 0.15));
+      out.push({
+        id: newId(), sample: true, author: 'Sample data', note: '',
+        date: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,
+        leads, connects, appointments, sales, premium: sales * Math.round(1800 + rnd() * 900),
+      });
+    }
+  }
+  return out;
 }
 
 async function handleApi(req, res, url) {
@@ -232,6 +294,55 @@ async function handleApi(req, res, url) {
       commit();
       return send(res, 200, { task, version: state.version });
     }
+  }
+
+  // ---- production numbers ----
+  const prod = state.production;
+  if (pathname === '/api/production/entries' && method === 'POST') {
+    const body = await readBody(req);
+    const e = cleanEntry({ date: today(), ...body }, { id: newId() });
+    if (!e.date) return send(res, 400, { error: 'Date is required' });
+    if (!METRIC_KEYS.some((k) => e[k] !== null && e[k] !== undefined)) return send(res, 400, { error: 'Enter at least one number' });
+    prod.entries.push(e);
+    commit();
+    return send(res, 201, publicState());
+  }
+  const pe = pathname.match(/^\/api\/production\/entries\/([a-f0-9]+)$/);
+  if (pe) {
+    const i = prod.entries.findIndex((e) => e.id === pe[1]);
+    if (i === -1) return send(res, 404, { error: 'Entry not found' });
+    if (method === 'PUT') {
+      const e = cleanEntry(await readBody(req), prod.entries[i]);
+      if (!e.date) return send(res, 400, { error: 'Date is required' });
+      delete e.sample;
+      prod.entries[i] = e;
+      commit();
+      return send(res, 200, publicState());
+    }
+    if (method === 'DELETE') {
+      prod.entries.splice(i, 1);
+      commit();
+      return send(res, 200, publicState());
+    }
+  }
+  if (pathname === '/api/production/goals' && method === 'PUT') {
+    const body = await readBody(req);
+    if (!/^\d{4}-\d{2}$/.test(body.month || '')) return send(res, 400, { error: 'month must be YYYY-MM' });
+    const g = {};
+    for (const k of METRIC_KEYS) { const v = num((body.goals || {})[k]); if (v !== null) g[k] = v; }
+    if (Object.keys(g).length) prod.goals[body.month] = g; else delete prod.goals[body.month];
+    commit();
+    return send(res, 200, publicState());
+  }
+  if (pathname === '/api/production/sample' && method === 'POST') {
+    prod.entries = prod.entries.filter((e) => !e.sample).concat(sampleEntries());
+    commit();
+    return send(res, 200, publicState());
+  }
+  if (pathname === '/api/production/sample' && method === 'DELETE') {
+    prod.entries = prod.entries.filter((e) => !e.sample);
+    commit();
+    return send(res, 200, publicState());
   }
 
   if (pathname === '/api/members' && method === 'PUT') {

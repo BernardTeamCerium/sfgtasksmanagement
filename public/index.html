@@ -32,7 +32,10 @@
           <span class="wordmark-sub">FINANCIAL GROUP</span>
         </div>
         <span class="brand-divider"></span>
-        <span class="brand-app">Project Management</span>
+        <nav class="pagenav" aria-label="Sections">
+          <a href="#tasks" class="pagelink" data-page="tasks">Tasks</a>
+          <a href="#production" class="pagelink" data-page="production">Production</a>
+        </nav>
       </div>
       <div class="topbar-actions">
         <label class="whoami">
@@ -45,7 +48,7 @@
       </div>
     </header>
 
-    <main class="container">
+    <main class="container" id="tasksPage">
       <section class="stats" id="stats">
         <button class="stat" data-quick="open"><span class="stat-label">Open Tasks</span><span class="stat-value" id="statOpen">0</span></button>
         <button class="stat stat-danger" data-quick="overdue"><span class="stat-label">Overdue</span><span class="stat-value" id="statOverdue">0</span></button>
@@ -76,6 +79,84 @@
       </p>
 
       <section id="view"></section>
+    </main>
+
+    <!-- Production dashboard -->
+    <main class="container" id="productionPage" hidden>
+      <section class="prod-head">
+        <div class="month-nav">
+          <button class="btn icon-only" id="prevMonth" aria-label="Previous month">‹</button>
+          <div>
+            <h1 id="prodTitle">Production</h1>
+            <p class="muted" id="prodSubtitle"></p>
+          </div>
+          <button class="btn icon-only" id="nextMonth" aria-label="Next month">›</button>
+        </div>
+        <div class="prod-actions">
+          <button class="btn" id="goalsBtn">Set goals</button>
+          <button class="btn" id="presentBtn" title="Full-screen view for the team meeting">Present</button>
+          <button class="btn btn-accent" id="addEntryBtn">+ Enter numbers</button>
+        </div>
+      </section>
+
+      <div id="sampleBanner" class="banner" hidden>
+        <span><strong>Sample data shown.</strong> These numbers are made up for preview. Enter real numbers, then clear the sample.</span>
+        <button class="btn" id="clearSampleBtn">Clear sample data</button>
+      </div>
+
+      <div id="prodEmpty" class="empty" hidden>
+        <p><strong>No production numbers yet.</strong></p>
+        <p>Enter weekly (or daily) totals before each meeting. The dashboard adds them up by month and compares each month to the one before.</p>
+        <p class="inline-form" style="justify-content:center">
+          <button class="btn btn-accent" data-action="add-entry">+ Enter numbers</button>
+          <button class="btn" id="loadSampleBtn">Preview with sample data</button>
+        </p>
+      </div>
+
+      <div id="prodBody">
+        <section class="summary-card">
+          <h2>Meeting summary</h2>
+          <ul id="prodSummary" class="summary-list"></ul>
+        </section>
+
+        <section class="kpis" id="kpis"></section>
+
+        <section class="metric-row" role="tablist" aria-label="Metric shown in charts" id="metricTabs"></section>
+
+        <section class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-head">
+              <h3 id="paceTitle">Month-to-date pace</h3>
+              <div class="legend-row" id="paceLegend"></div>
+            </div>
+            <div class="chart" id="paceChart"></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-head">
+              <h3 id="trendTitle">6-month trend</h3>
+              <div class="legend-row" id="trendLegend"></div>
+            </div>
+            <div class="chart" id="trendChart"></div>
+          </div>
+        </section>
+
+        <section class="chart-grid">
+          <div class="chart-card">
+            <h3>Month over month</h3>
+            <div class="table-wrap flat"><table class="mom" id="momTable"></table></div>
+          </div>
+          <div class="chart-card">
+            <h3>Conversion rates</h3>
+            <div class="table-wrap flat"><table class="mom" id="convTable"></table></div>
+          </div>
+        </section>
+
+        <section class="chart-card entries-card">
+          <div class="chart-head"><h3>Entries this month</h3><span class="muted small">Click an entry to edit it</span></div>
+          <div class="table-wrap flat"><table class="mom" id="entryTable"></table></div>
+        </section>
+      </div>
+      <div class="tooltip" id="chartTip" role="status" hidden></div>
     </main>
   </div>
 
@@ -146,8 +227,51 @@
     </div>
   </dialog>
 
+  <!-- Production entry modal -->
+  <dialog id="entryModal" class="modal modal-sm">
+    <form id="entryForm" method="dialog">
+      <header class="modal-head">
+        <h2 id="entryModalTitle">Enter numbers</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Close">×</button>
+      </header>
+      <div class="modal-body">
+        <p class="muted small">Enter totals for the period ending on this date (for example, the week ending Friday). Leave a box blank if you don't track it.</p>
+        <div class="grid" id="entryFields">
+          <label class="span-2">Period ending<input name="date" type="date" required /></label>
+        </div>
+        <label class="stack">Note (optional)<input name="note" maxlength="1000" placeholder="e.g. Short week — holiday" /></label>
+      </div>
+      <footer class="modal-foot">
+        <button type="button" class="btn btn-danger-ghost" id="deleteEntryBtn">Delete</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" data-close>Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Goals modal -->
+  <dialog id="goalsModal" class="modal modal-sm">
+    <form id="goalsForm" method="dialog">
+      <header class="modal-head">
+        <h2 id="goalsModalTitle">Monthly goals</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Close">×</button>
+      </header>
+      <div class="modal-body">
+        <p class="muted small">Goals apply to this month and carry forward to later months until you change them.</p>
+        <div class="grid" id="goalFields"></div>
+      </div>
+      <footer class="modal-foot">
+        <span class="spacer"></span>
+        <button type="button" class="btn" data-close>Cancel</button>
+        <button type="submit" class="btn btn-primary">Save goals</button>
+      </footer>
+    </form>
+  </dialog>
+
   <div id="toast" class="toast" hidden></div>
 
   <script src="app.js"></script>
+  <script src="production.js"></script>
 </body>
 </html>

@@ -206,7 +206,17 @@ function renderStats() {
   $$('.stat').forEach((b) => b.classList.toggle('active', b.dataset.quick === S.quick));
 }
 
+function currentPage() {
+  return location.hash === '#production' ? 'production' : 'tasks';
+}
+
 function render() {
+  const page = currentPage();
+  $('#tasksPage').hidden = page !== 'tasks';
+  $('#productionPage').hidden = page !== 'production';
+  $('#newTaskBtn').hidden = page !== 'tasks';
+  $$('.pagelink').forEach((l) => l.classList.toggle('active', l.dataset.page === page));
+  if (page === 'production') return window.renderProduction && window.renderProduction();
   renderStats();
   $$('.tab').forEach((b) => b.classList.toggle('active', b.dataset.view === S.view));
   const root = $('#view');
@@ -616,8 +626,10 @@ function wire() {
   $('#exportBtn').addEventListener('click', exportCSV);
   $('#importFile').addEventListener('change', (e) => { const f = e.target.files[0]; e.target.value = ''; if (f) importCSV(f); });
 
+  window.addEventListener('hashchange', render);
+
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'n' && !e.metaKey && !e.ctrlKey && !document.querySelector('dialog[open]') && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) {
+    if (e.key === 'n' && currentPage() === 'tasks' && !e.metaKey && !e.ctrlKey && !document.querySelector('dialog[open]') && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) {
       e.preventDefault(); openTask(null);
     }
   });

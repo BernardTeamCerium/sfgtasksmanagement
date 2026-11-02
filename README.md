@@ -15,6 +15,23 @@ A shared, branded task manager for the SFG team. It replaces the "Sibley Financi
 - **Sync:** changes from teammates show up automatically about every 20 seconds.
 - **Optional team passcode:** sign-in to keep the board private.
 
+### Production dashboard (Production tab)
+
+The Production tab is a dashboard for the team meeting:
+
+- **Entering numbers:** before each meeting, click **Enter numbers** and type the totals for the period. Weekly totals work well, for example the week ending Friday; daily totals also work. The metrics are Leads, Good Connects, Appointments, Sales and Premium. Leave a box blank if you don't track that metric.
+- **Monthly totals:** the dashboard adds up each month and compares it with the month before.
+- **Meeting summary:** written automatically, for example "Good Connects: 41 vs 30 in Sep ▲ +37% ✓ Goal of 40 met".
+- **KPI tiles:** change vs last month, progress toward goal, and, for the current month, the pace the team is on.
+- **Month-to-date pace chart:** the running total by day, this month against last month, with the goal line. Hover for exact values.
+- **6-month trend chart:** monthly totals for the last six months.
+- **Tables:** month-over-month totals, and conversion rates (Leads → Connects → Appointments → Sales, plus average premium per sale).
+- **Goals:** set them with **Set goals**. A goal carries forward until you change it. October's goal of 40 good connects comes from the team sheet.
+- **Present:** opens a clean full-screen view for the meeting.
+- **Sample data:** use **Preview with sample data** to see the dashboard before real numbers exist. Sample numbers are clearly flagged and removed with **Clear sample data**.
+
+To rename or add metrics, edit `METRICS` in `server.js`.
+
 The app comes pre-loaded with the 12 tasks from the current Google Sheet: 9 open (the "Tasks" tab) and 3 completed (the "Sheet1" tab).
 
 ## Run it
@@ -70,7 +87,7 @@ Headings use **Cinzel**, a free Google Font close to the logo's classical serif.
 
 ```
 server.js          zero-dependency HTTP server + JSON API
-public/            front end (index.html, styles.css, app.js, brand/)
+public/            front end (index.html, styles.css, app.js, production.js, brand/)
 data/seed.json     initial tasks imported from the Google Sheet
 ```
 
@@ -83,6 +100,12 @@ data/seed.json     initial tasks imported from the Google Sheet
 - `POST /api/tasks/:id/notes`
 - `DELETE /api/tasks/:id/notes/:noteId`
 - `PUT /api/members`
+- `POST /api/production/entries`
+- `PUT /api/production/entries/:id`
+- `DELETE /api/production/entries/:id`
+- `PUT /api/production/goals`
+- `POST /api/production/sample`
+- `DELETE /api/production/sample`
 - `POST /api/import`
 - `POST /api/login`
 - `POST /api/logout`
