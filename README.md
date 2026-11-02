@@ -36,7 +36,7 @@ The app comes pre-loaded with the 12 tasks from the current Google Sheet: 9 open
 
 ## Run it
 
-You need Node.js 18 or newer. There are no dependencies to install.
+You need Node.js 18 or newer. The Node server has no dependencies of its own; `@netlify/blobs` is only used on Netlify.
 
 ```bash
 TEAM_PASSCODE="choose-a-passcode" SESSION_SECRET="long-random-string" npm start
@@ -60,7 +60,19 @@ docker build -t sfg-tasks .
 docker run -d -p 3000:3000 -v sfg-data:/data -e TEAM_PASSCODE=... -e SESSION_SECRET=... sfg-tasks
 ```
 
-### Go live on Render (recommended)
+### Go live on Netlify
+
+The repository is set up for Netlify: `netlify.toml` serves the site from `public/`. The API runs as a Netlify Function (`netlify/functions/api.mjs`), and team data is kept in **Netlify Blobs**, storage that comes built into every Netlify site. There's nothing extra to buy or configure.
+
+1. In Netlify, open the site, then go to **Site configuration → Build & deploy → Continuous deployment**. Check that **Production branch** is the branch that holds this code. Leave **Base directory** empty; `netlify.toml` supplies the build settings.
+2. Go to **Site configuration → Environment variables** and add:
+   - `TEAM_PASSCODE`: the passcode the team signs in with. Required, or anyone with the link can edit.
+   - `SESSION_SECRET` (optional but recommended): any long random string.
+3. Go to **Deploys → Trigger deploy → Deploy site**. Changing environment variables only takes effect after a new deploy.
+
+After that, every push to the production branch redeploys automatically. Tasks and production numbers persist across deploys.
+
+### Go live on Render
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/BernardTeamCerium/sfgtasksmanagement)
 
@@ -68,8 +80,10 @@ docker run -d -p 3000:3000 -v sfg-data:/data -e TEAM_PASSCODE=... -e SESSION_SEC
 2. When asked, enter a **TEAM_PASSCODE**. This is the passcode the team will use to sign in.
 3. Click **Apply**. In a couple of minutes Render gives you a live link, like `https://sfg-task-manager.onrender.com`.
 
-The setup comes from `render.yaml`. It uses Render's Starter plan (about $7 a month) with a 1 GB disk (about $0.25 a month), so tasks and numbers survive restarts. Every push to GitHub redeploys the app automatically. To use your own address, such as `tasks.sibleyfinancialgroup.com`, add it under **Settings → Custom Domains** in Render.
+Render runs the regular Node server (`server.js`). The setup comes from `render.yaml`. It uses Render's Starter plan (about $7 a month) with a 1 GB disk (about $0.25 a month), so tasks and numbers survive restarts. Every push to GitHub redeploys the app automatically. To use your own address, such as `tasks.sibleyfinancialgroup.com`, add it under **Settings → Custom Domains** in Render.
 
+
+### Other hosts
 
 The app works on any host that runs Node or Docker and has a persistent disk, such as Render, Railway, Fly.io or a small VPS. Mount the persistent disk at `DATA_DIR`. Put it behind HTTPS so the sign-in cookie is sent securely.
 
@@ -95,7 +109,9 @@ Headings use **Cinzel**, a free Google Font close to the logo's classical serif.
 ## Project layout
 
 ```
-server.js          zero-dependency HTTP server + JSON API
+server.js          Node HTTP server (file storage), for Render / Docker / any VPS
+lib/core.js        the API itself, shared by server.js and the Netlify function
+netlify/           Netlify Function wrapper (Netlify Blobs storage) + netlify.toml at the root
 public/            front end (index.html, styles.css, app.js, production.js, brand/)
 data/seed.json     initial tasks imported from the Google Sheet
 ```

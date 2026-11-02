@@ -1,0 +1,10 @@
+# Netlify: static site from /public, API from netlify/functions (data in Netlify Blobs).
+[build]
+  publish = "public"
+  command = "echo 'No build step'"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  node_bundler = "esbuild"
