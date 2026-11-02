@@ -1,0 +1,276 @@
+{
+  "members": [
+    "Bernard Frazier",
+    "Troy Sibley",
+    "Bobby"
+  ],
+  "projects": [
+    "Technical Administration",
+    "Production Goal",
+    "Welcome Kits",
+    "Marketing Campaigns",
+    "Phone Number",
+    "Video Editing",
+    "Compliance Review - Videos",
+    "Reporting Tool",
+    "Get Bobby Access to CRM",
+    "Thank You Cards",
+    "Video Production For Vegas",
+    "CRM Launch"
+  ],
+  "tasks": [
+    {
+      "id": "89b9e0e42e903128",
+      "project": "Technical Administration",
+      "title": "Document system access and central password-management process",
+      "dateAssigned": "2026-09-30",
+      "assignee": "Bernard Frazier",
+      "dueDate": "2026-10-30",
+      "priority": "Medium",
+      "status": "In Progress",
+      "nextAction": "Bernard will provide a tracking sheet with all platform access",
+      "links": "Team Meeting 09/28/2026",
+      "notes": [
+        {
+          "id": "5a89ecce131bdb2a",
+          "date": "2026-10-26",
+          "author": "Bernard Frazier",
+          "text": "Once CRM implementation is completed. Bernard will provide access to all platforms."
+        }
+      ],
+      "lastUpdated": "2026-10-26",
+      "createdAt": "2026-09-30T12:00:00.000Z"
+    },
+    {
+      "id": "175e12af16946caa",
+      "project": "Production Goal",
+      "title": "Reach October's target of 40 good connects",
+      "dateAssigned": "2026-09-30",
+      "assignee": "Troy Sibley",
+      "dueDate": "2026-10-30",
+      "priority": "High",
+      "status": "In Progress",
+      "nextAction": "Review weekly connect totals with Bobby and address calendar or lead-coverage gaps.",
+      "links": "Team Meeting 09/28/2026",
+      "notes": [
+        {
+          "id": "a6846e766794baef",
+          "date": "2026-10-26",
+          "author": "Troy Sibley",
+          "text": "Agreed team goal; Troy is proposed accountable owner. Proposed deadline is the last business day of October. October actuals not provided."
+        }
+      ],
+      "lastUpdated": "2026-10-26",
+      "createdAt": "2026-09-30T12:00:00.000Z"
+    },
+    {
+      "id": "bf4abf969a994da4",
+      "project": "Welcome Kits",
+      "title": "Confirm pricing of Welcome Kits for new clients",
+      "dateAssigned": "2026-09-28",
+      "assignee": "Bernard Frazier",
+      "dueDate": "2026-10-30",
+      "priority": "Medium",
+      "status": "In Progress",
+      "nextAction": "Get finalized costs including estimated shipping costs. Then order a sample kit for review. Prepare timeline.",
+      "links": "",
+      "notes": [
+        {
+          "id": "2fa77b3755f231cb",
+          "date": "2026-10-26",
+          "author": "Bernard Frazier",
+          "text": "Waiting on full quote from production company for the custom boxes. Current estimated cost at $59 per box."
+        }
+      ],
+      "lastUpdated": "2026-10-26",
+      "createdAt": "2026-09-28T12:00:00.000Z"
+    },
+    {
+      "id": "e88f31e430c8e039",
+      "project": "Marketing Campaigns",
+      "title": "Marketing campaigns to generate leads and appointments",
+      "dateAssigned": "2026-09-28",
+      "assignee": "Bernard Frazier",
+      "dueDate": "2026-11-13",
+      "priority": "High",
+      "status": "In Progress",
+      "nextAction": "Complete test notifications to agents and staff and complete CRM tasks. Then launch a few test campaigns with small marketing budget.",
+      "links": "",
+      "notes": [
+        {
+          "id": "f0d970e3cb6cee51",
+          "date": "2026-10-26",
+          "author": "Bernard Frazier",
+          "text": "Current test campaigns are queued up in the campaign manager. Waiting on completing of CRM tasks before launch."
+        }
+      ],
+      "lastUpdated": "2026-10-26",
+      "createdAt": "2026-09-28T12:00:00.000Z"
+    },
+    {
+      "id": "5580e5a168539b75",
+      "project": "Phone Number",
+      "title": "Phone routing system",
+      "dateAssigned": "2026-10-26",
+      "assignee": "Bernard Frazier",
+      "dueDate": "2026-10-30",
+      "priority": "High",
+      "status": "In Progress",
+      "nextAction": "Working with Quo and other systems to get pricing and confirm transfer of numbers",
+      "links": "",
+      "notes": [
+        {
+          "id": "86de5daa2d8924e5",
+          "date": "2026-10-26",
+          "author": "Bernard Frazier",
+          "text": "Connect all phone numbers to a routing system - Quo (potentially)"
+        }
+      ],
+      "lastUpdated": "2026-10-26",
+      "createdAt": "2026-10-26T12:00:00.000Z"
+    },
+    {
+      "id": "c4056d97112e7c8e",
+      "project": "Video Editing",
+      "title": "Editing videos captured in Vegas",
+      "dateAssigned": "2026-10-26",
+      "assignee": "Bernard Frazier",
+      "dueDate": "2026-11-13",
+      "priority": "Medium",
+      "status": "In Progress",
+      "nextAction": "Will have a sample out this week and deliver the full production in the next couple of weeks. Will have a bank of footage.",
+      "links": "",
+      "notes": [
+        {
+          "id": "c58da13eb713c20e",
+          "date": "2026-10-26",
+          "author": "Bernard Frazier",
+          "text": "Edit footage captured in Vegas of Troy Sibley."
+        }
+      ],
+      "lastUpdated": "2026-10-26",
+      "createdAt": "2026-10-26T12:00:00.000Z"
+    },
+    {
+      "id": "3d84d728b991e94e",
+      "project": "Compliance Review - Videos",
+      "title": "Get full compliance review for Vegas Videos",
+      "dateAssigned": "2026-10-26",
+      "assignee": "Bernard Frazier",
+      "dueDate": "2026-11-27",
+      "priority": "Medium",
+      "status": "In Progress",
+      "nextAction": "Will have compliance review videos and make edits",
+      "links": "",
+      "notes": [
+        {
+          "id": "cf24b116252ceb99",
+          "date": "2026-10-26",
+          "author": "Bernard Frazier",
+          "text": "Get full compliance review of videos edited of vegas footage with Troy Sibley"
+        }
+      ],
+      "lastUpdated": "2026-10-26",
+      "createdAt": "2026-10-26T12:00:00.000Z"
+    },
+    {
+      "id": "35a9ecbab7607449",
+      "project": "Reporting Tool",
+      "title": "Finalize reporting tool within CRM",
+      "dateAssigned": "2026-10-26",
+      "assignee": "Bernard Frazier",
+      "dueDate": "2026-11-13",
+      "priority": "High",
+      "status": "In Progress",
+      "nextAction": "Finalize updates on tool.",
+      "links": "",
+      "notes": [
+        {
+          "id": "64e9ff1f572a8538",
+          "date": "2026-10-26",
+          "author": "Bernard Frazier",
+          "text": "Update the reporting tool in the CRM - focus on automation in front end for leads, appointments and maybe connects. (Hard code Goals) Key-in data for sales."
+        }
+      ],
+      "lastUpdated": "2026-10-26",
+      "createdAt": "2026-10-26T12:00:00.000Z"
+    },
+    {
+      "id": "a39b56423552c2a1",
+      "project": "Get Bobby Access to CRM",
+      "title": "Bobby data entry into CRM",
+      "dateAssigned": "2026-10-26",
+      "assignee": "Bernard Frazier",
+      "dueDate": "2026-11-06",
+      "priority": "Medium",
+      "status": "In Progress",
+      "nextAction": "",
+      "links": "",
+      "notes": [],
+      "lastUpdated": "2026-10-26",
+      "createdAt": "2026-10-26T12:00:00.000Z"
+    },
+    {
+      "id": "5ee79b3b0e5aaa1b",
+      "project": "Thank You Cards",
+      "title": "Get Thank You cards printed",
+      "dateAssigned": "2026-10-01",
+      "assignee": "Bernard Frazier",
+      "dueDate": "2026-10-09",
+      "priority": "Medium",
+      "status": "Completed",
+      "nextAction": "Update the team once costs and timelines are known",
+      "links": "",
+      "notes": [
+        {
+          "id": "33084a44734580d4",
+          "date": "2026-10-12",
+          "author": "Bernard Frazier",
+          "text": "Design approved by Team - working with printer on costs and timeline of production and delivery"
+        }
+      ],
+      "lastUpdated": "2026-10-12",
+      "createdAt": "2026-10-01T12:00:00.000Z",
+      "completedAt": "2026-10-12"
+    },
+    {
+      "id": "85d3a92def101426",
+      "project": "Video Production For Vegas",
+      "title": "Recording video clips and taking photos of the Sibley Financial Group",
+      "dateAssigned": "2026-10-09",
+      "assignee": "Bernard Frazier",
+      "dueDate": "2026-10-25",
+      "priority": "Medium",
+      "status": "Completed",
+      "nextAction": "",
+      "links": "",
+      "notes": [],
+      "lastUpdated": "2026-10-09",
+      "createdAt": "2026-10-09T12:00:00.000Z",
+      "completedAt": "2026-10-09"
+    },
+    {
+      "id": "89be58afdc144003",
+      "project": "CRM Launch",
+      "title": "Review CRM infrastructure and prepare technical questions",
+      "dateAssigned": "2026-09-28",
+      "assignee": "Bernard Frazier",
+      "dueDate": "2026-10-07",
+      "priority": "High",
+      "status": "Completed",
+      "nextAction": "Connect on the zoom meeting 10/2 to guide through steps for connection",
+      "links": "Team Meeting 09/28/2026",
+      "notes": [
+        {
+          "id": "7b931c99f8f82224",
+          "date": "2026-10-26",
+          "author": "Bernard Frazier",
+          "text": "Need to connect to Troy's email for lead data and calendar"
+        }
+      ],
+      "lastUpdated": "2026-10-26",
+      "createdAt": "2026-09-28T12:00:00.000Z",
+      "completedAt": "2026-10-26"
+    }
+  ]
+}

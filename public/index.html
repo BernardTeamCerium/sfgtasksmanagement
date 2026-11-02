@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SFG Task Manager</title>
+  <link rel="icon" href="brand/logo-mark.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" />
+  <link rel="stylesheet" href="brand/brand.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Sign-in (only shown when TEAM_PASSCODE is set on the server) -->
+  <section id="login" class="login" hidden>
+    <form id="loginForm" class="login-card">
+      <img class="login-logo" src="brand/logo.svg" alt="Sibley Financial Group" />
+      <h1>Team Task Manager</h1>
+      <p class="muted">Enter the team passcode to continue.</p>
+      <input id="passcode" type="password" autocomplete="current-password" placeholder="Team passcode" required />
+      <p id="loginError" class="error" hidden></p>
+      <button class="btn btn-primary" type="submit">Sign in</button>
+    </form>
+  </section>
+
+  <div id="app" hidden>
+    <header class="topbar">
+      <div class="brand">
+        <img class="brand-logo" src="brand/logo.svg" alt="Sibley Financial Group" />
+        <span class="brand-divider"></span>
+        <span class="brand-app">Project Management</span>
+      </div>
+      <div class="topbar-actions">
+        <label class="whoami">
+          <span>I am</span>
+          <select id="me"></select>
+        </label>
+        <button class="btn btn-ghost-light" id="settingsBtn" title="Team & data settings">Settings</button>
+        <button class="btn btn-ghost-light" id="logoutBtn" hidden>Sign out</button>
+        <button class="btn btn-gold" id="newTaskBtn">+ New Task</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="stats" id="stats">
+        <button class="stat" data-quick="open"><span class="stat-label">Open Tasks</span><span class="stat-value" id="statOpen">0</span></button>
+        <button class="stat stat-danger" data-quick="overdue"><span class="stat-label">Overdue</span><span class="stat-value" id="statOverdue">0</span></button>
+        <button class="stat stat-warn" data-quick="soon"><span class="stat-label">Due in 7 Days</span><span class="stat-value" id="statSoon">0</span></button>
+        <button class="stat stat-ok" data-quick="completed"><span class="stat-label">Completed</span><span class="stat-value" id="statDone">0</span></button>
+      </section>
+
+      <section class="toolbar">
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-view="table">Table</button>
+          <button class="tab" data-view="board">Board</button>
+          <button class="tab" data-view="people">By Person</button>
+        </div>
+        <div class="filters">
+          <input id="search" type="search" placeholder="Search tasks, notes, next actions…" />
+          <select id="fAssignee"><option value="">All owners</option></select>
+          <select id="fProject"><option value="">All projects</option></select>
+          <select id="fPriority"><option value="">All priorities</option></select>
+          <select id="fStatus"><option value="">All open</option></select>
+          <button class="btn btn-link" id="clearFilters">Clear</button>
+        </div>
+      </section>
+
+      <p class="legend muted">
+        <span class="chip chip-overdue">Overdue</span> past due date ·
+        <span class="chip chip-soon">Due soon</span> due today or within 7 days ·
+        Click any task to add dated updates.
+      </p>
+
+      <section id="view"></section>
+    </main>
+  </div>
+
+  <!-- Task modal -->
+  <dialog id="taskModal" class="modal">
+    <form id="taskForm" method="dialog">
+      <header class="modal-head">
+        <h2 id="taskModalTitle">New Task</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Close">×</button>
+      </header>
+      <div class="modal-body">
+        <div class="grid">
+          <label class="span-2">Task<input name="title" required maxlength="300" placeholder="What needs to get done?" /></label>
+          <label>Project / Workstream<input name="project" list="projectList" maxlength="200" placeholder="e.g. Marketing Campaigns" /></label>
+          <label>Assigned To<select name="assignee"></select></label>
+          <label>Date Assigned<input name="dateAssigned" type="date" /></label>
+          <label>Due Date<input name="dueDate" type="date" /></label>
+          <label>Priority<select name="priority"></select></label>
+          <label>Status<select name="status"></select></label>
+          <label class="span-2">Next Action<textarea name="nextAction" rows="2" maxlength="4000" placeholder="The very next step"></textarea></label>
+          <label class="span-2">Links / Files<input name="links" maxlength="2000" placeholder="URLs or references (e.g. Team Meeting 09/28/2026)" /></label>
+        </div>
+        <datalist id="projectList"></datalist>
+
+        <section class="updates">
+          <h3>Task Updates</h3>
+          <div class="note-add">
+            <input type="date" id="noteDate" />
+            <textarea id="noteText" rows="2" maxlength="4000" placeholder="Add a dated update…"></textarea>
+            <button type="button" class="btn btn-primary" id="addNoteBtn">Add update</button>
+          </div>
+          <ol id="notes" class="notes"></ol>
+          <p id="lastUpdated" class="muted small"></p>
+        </section>
+      </div>
+      <footer class="modal-foot">
+        <button type="button" class="btn btn-danger-ghost" id="deleteTaskBtn">Delete</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" data-close>Cancel</button>
+        <button type="submit" class="btn btn-primary" id="saveTaskBtn">Save task</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Settings modal -->
+  <dialog id="settingsModal" class="modal modal-sm">
+    <div>
+      <header class="modal-head">
+        <h2>Settings</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Close">×</button>
+      </header>
+      <div class="modal-body">
+        <h3>Team members</h3>
+        <ul id="memberList" class="member-list"></ul>
+        <form id="memberForm" class="inline-form">
+          <input id="memberName" placeholder="Add a team member" maxlength="100" required />
+          <button class="btn btn-primary" type="submit">Add</button>
+        </form>
+
+        <h3>Data</h3>
+        <p class="muted small">Export everything to CSV (opens in Google Sheets / Excel), or import rows from a CSV with the same columns as the original sheet.</p>
+        <div class="inline-form">
+          <button class="btn" id="exportBtn" type="button">Export CSV</button>
+          <label class="btn" for="importFile">Import CSV</label>
+          <input id="importFile" type="file" accept=".csv,text/csv" hidden />
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
