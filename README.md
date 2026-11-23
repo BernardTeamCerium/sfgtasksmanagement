@@ -19,18 +19,22 @@ A shared, branded task manager for the SFG team. It replaces the "Sibley Financi
 
 The Production tab is a dashboard for the team meeting:
 
-- **Entering numbers:** before each meeting, click **Enter numbers** and type the totals for the period. Weekly totals work well, for example the week ending Friday; daily totals also work. The metrics are Leads, Good Connects, Appointments, Sales and Premium. Leave a box blank if you don't track that metric.
+- **Entering numbers:** before each meeting, click **Enter numbers** and type the totals for the period. Weekly totals work well, for example the week ending Friday; daily totals also work. Add a **Period start** when a total covers more than a week, such as a monthly figure. The metrics are Leads, Appointments Set, Good Connects (connected *and* a qualified opportunity), Qualified Opportunities, Sales, Submitted Business ($) and Paid Business ($). Leave a box blank if you don't track that metric.
+- **Import CSV:** load history in bulk. Use the columns `Period Start, Period End`, one column per metric named like the metric (for example `Good Connects`, `Submitted Business`), then `Note, Source`. Importing again replaces the previously imported rows; numbers typed in by hand are kept. Keep these files out of the repository, because it is public.
+- **Partial months are flagged:** the app works out which days each number covers. A month missing early or late days is marked ◐, for example "through 9/21 only", and is never compared as if it were complete.
+- **Missing or incomplete numbers:** a list at the top shows what is missing for the month on screen and the month before. A **Data check** grid shows ✓ / ◐ / ✕ for every metric over the last 12 months.
+- **Same month last year and year to date:** each metric is compared with last month and with the same month last year, and a year-to-date table compares January through the selected month with the year before.
 - **Monthly totals:** the dashboard adds up each month and compares it with the month before.
 - **Meeting summary:** written automatically, for example "Good Connects: 41 vs 30 in Sep ▲ +37% ✓ Goal of 40 met".
 - **KPI tiles:** change vs last month, progress toward goal, and, for the current month, the pace the team is on.
 - **Month-to-date pace chart:** the running total by day, this month against last month, with the goal line. Hover for exact values.
-- **6-month trend chart:** monthly totals for the last six months.
-- **Tables:** month-over-month totals, and conversion rates (Leads → Connects → Appointments → Sales, plus average premium per sale).
+- **Trend chart:** monthly totals for the last 6, 12 or 24 months. Partial months are drawn faded with a dashed outline.
+- **Conversion rates:** Leads → Appointments → Good Connects → Sales, shown only when both numbers cover the same days.
 - **Goals:** set them with **Set goals**. A goal carries forward until you change it. October's goal of 40 good connects comes from the team sheet.
 - **Present:** opens a clean full-screen view for the meeting.
 - **Sample data:** use **Preview with sample data** to see the dashboard before real numbers exist. Sample numbers are clearly flagged and removed with **Clear sample data**.
 
-To rename or add metrics, edit `METRICS` in `server.js`.
+To rename or add metrics, edit `METRICS` in `lib/core.js`.
 
 The app comes pre-loaded with the 12 tasks from the current Google Sheet: 9 open (the "Tasks" tab) and 3 completed (the "Sheet1" tab).
 

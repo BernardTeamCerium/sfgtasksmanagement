@@ -93,6 +93,8 @@
           <button class="btn icon-only" id="nextMonth" aria-label="Next month">›</button>
         </div>
         <div class="prod-actions">
+          <label class="btn" for="prodImportFile" title="Import monthly or weekly totals from a CSV file">Import CSV</label>
+          <input id="prodImportFile" type="file" accept=".csv,text/csv" hidden />
           <button class="btn" id="goalsBtn">Set goals</button>
           <button class="btn" id="presentBtn" title="Full-screen view for the team meeting">Present</button>
           <button class="btn btn-accent" id="addEntryBtn">+ Enter numbers</button>
@@ -109,6 +111,7 @@
         <p>Enter weekly (or daily) totals before each meeting. The dashboard adds them up by month and compares each month to the one before.</p>
         <p class="inline-form" style="justify-content:center">
           <button class="btn btn-accent" data-action="add-entry">+ Enter numbers</button>
+          <label class="btn" for="prodImportFile">Import CSV</label>
           <button class="btn" id="loadSampleBtn">Preview with sample data</button>
         </p>
       </div>
@@ -117,6 +120,11 @@
         <section class="summary-card">
           <h2>Meeting summary</h2>
           <ul id="prodSummary" class="summary-list"></ul>
+        </section>
+
+        <section class="gaps-card" id="gapsCard" hidden>
+          <h2>Missing or incomplete numbers</h2>
+          <ul id="gapsList" class="summary-list"></ul>
         </section>
 
         <section class="kpis" id="kpis"></section>
@@ -133,22 +141,46 @@
           </div>
           <div class="chart-card">
             <div class="chart-head">
-              <h3 id="trendTitle">6-month trend</h3>
-              <div class="legend-row" id="trendLegend"></div>
+              <h3 id="trendTitle">Trend</h3>
+              <div class="tabs small-tabs" id="rangeTabs" role="tablist" aria-label="Trend range">
+                <button class="tab" data-range="6">6 mo</button>
+                <button class="tab" data-range="12">12 mo</button>
+                <button class="tab" data-range="24">24 mo</button>
+              </div>
             </div>
+            <div class="legend-row legend-below" id="trendLegend"></div>
             <div class="chart" id="trendChart"></div>
           </div>
         </section>
 
+        <section class="chart-card">
+          <h3>Month over month and same month last year</h3>
+          <div class="table-wrap flat"><table class="mom" id="momTable"></table></div>
+        </section>
+
         <section class="chart-grid">
           <div class="chart-card">
-            <h3>Month over month</h3>
-            <div class="table-wrap flat"><table class="mom" id="momTable"></table></div>
+            <h3 id="ytdTitle">Year to date</h3>
+            <div class="table-wrap flat"><table class="mom" id="ytdTable"></table></div>
           </div>
           <div class="chart-card">
             <h3>Conversion rates</h3>
             <div class="table-wrap flat"><table class="mom" id="convTable"></table></div>
+            <p class="muted small">A rate is only shown when both numbers cover the same days.</p>
           </div>
+        </section>
+
+        <section class="chart-card datacheck-card">
+          <div class="chart-head">
+            <h3>Data check: last 12 months</h3>
+            <div class="legend-row">
+              <span class="legend-item"><span class="cov cov-complete">✓</span>Complete</span>
+              <span class="legend-item"><span class="cov cov-partial">◐</span>Partial</span>
+              <span class="legend-item"><span class="cov cov-missing">✕</span>Missing</span>
+            </div>
+          </div>
+          <div class="table-wrap flat"><table class="mom covgrid" id="covTable"></table></div>
+          <p class="muted small">Hover over a partial cell to see which days it covers. Click a month to open it.</p>
         </section>
 
         <section class="chart-card entries-card">
@@ -237,7 +269,8 @@
       <div class="modal-body">
         <p class="muted small">Enter totals for the period ending on this date (for example, the week ending Friday). Leave a box blank if you don't track it.</p>
         <div class="grid" id="entryFields">
-          <label class="span-2">Period ending<input name="date" type="date" required /></label>
+          <label>Period start (optional)<input name="start" type="date" /></label>
+          <label>Period ending<input name="date" type="date" required /></label>
         </div>
         <label class="stack">Note (optional)<input name="note" maxlength="1000" placeholder="e.g. Short week — holiday" /></label>
       </div>

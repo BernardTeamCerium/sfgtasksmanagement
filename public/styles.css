@@ -385,3 +385,33 @@ body.presenting .kpi-value { font-size: 40px; }
   .prod-actions { width: 100%; }
   .prod-actions .btn { flex: 1; }
 }
+
+/* ---------- production: data completeness ---------- */
+.gaps-card {
+  background: #fff8e6; border: 1px solid #f1dc9a; border-left: 4px solid #e0a800; border-radius: var(--radius);
+  padding: 14px 20px; margin-bottom: 16px; box-shadow: var(--shadow);
+}
+.gaps-card h2 { font-size: 16px; margin-bottom: 6px; color: #5c4300; }
+.delta.partial { background: #fff4d1; color: var(--warn); }
+.kpi-partial { font-size: 12px; font-weight: 600; color: var(--warn); }
+.kpi.kpi-missing .kpi-value { color: var(--brand-silver); font-size: 22px; }
+.cell-note { color: var(--warn); font-weight: 700; cursor: help; }
+.small-tabs { padding: 2px; }
+.small-tabs .tab { padding: 4px 10px; font-size: 12.5px; }
+.legend-below { margin: 2px 0 6px; }
+.legend-key.outline { width: 10px; height: 10px; border-radius: 2px; border: 1.5px dashed; background: transparent; }
+
+.covgrid th, .covgrid td { text-align: center; padding: 7px 6px; }
+.covgrid th:first-child, .covgrid td:first-child { text-align: left; white-space: nowrap; }
+.covgrid .cov-month { cursor: pointer; }
+.covgrid .cov-month.sel { color: var(--brand-red); }
+.cov-year { display: block; font-size: 10px; color: var(--muted); font-weight: 500; }
+.covgrid .cov-cell { cursor: pointer; }
+.covgrid tbody tr { cursor: default; }
+.cov { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; font-weight: 700; font-size: 13px; }
+.cov-complete { background: var(--ok-bg); color: var(--ok); }
+.cov-partial { background: var(--warn-bg); color: var(--warn); }
+.cov-missing { background: var(--danger-bg); color: var(--danger); }
+.legend-row .cov { width: 18px; height: 18px; font-size: 11px; }
+body.presenting .datacheck-card { display: none !important; }
+.chart-note { margin: 4px 0 0; }
