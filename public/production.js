@@ -95,6 +95,17 @@
     return { status: lateStart || earlyEnd ? 'partial' : 'complete', from, to, label };
   }
   const usable = (cov) => cov.status === 'complete';
+  const isoDay = (ym, d) => `${ym}-${String(d).padStart(2, '0')}`;
+  // The days still missing for a month + metric, to pre-fill the entry form.
+  function gapSpan(ym, key) {
+    const cov = coverage(ym, key);
+    const endDay = elapsedDays(ym);
+    if (cov.status === 'missing') return { start: isoDay(ym, 1), end: isoDay(ym, endDay), metric: key };
+    if (cov.status !== 'partial') return null;
+    const fromDay = Number(cov.from.slice(8)), toDay = Number(cov.to.slice(8));
+    if (toDay < endDay - 6) return { start: isoDay(ym, toDay + 1), end: isoDay(ym, endDay), metric: key };
+    return { start: isoDay(ym, 1), end: isoDay(ym, fromDay - 1), metric: key };
+  }
   const sameSpan = (a, b) => a.status !== 'missing' && b.status !== 'missing' && a.from === b.from && a.to === b.to;
 
   function defaultMonth() {
@@ -592,7 +603,7 @@
         const title = cov.status === 'missing' ? `${m.label}, ${monthLabel(mm)}: missing`
           : cov.status === 'partial' ? `${m.label}, ${monthLabel(mm)}: ${cov.label}`
           : cov.status === 'complete' ? `${m.label}, ${monthLabel(mm)}: ${fmt(m.key, total(mm, m.key))}` : '';
-        const td = node('td', { class: 'cov-cell', 'data-month': mm, title }, tr);
+        const td = node('td', { class: 'cov-cell', 'data-month': mm, 'data-metric': m.key, title: title + (cov.status === 'missing' || cov.status === 'partial' ? ' — click to enter' : '') }, tr);
         node('span', { class: `cov cov-${cov.status}` }, td, sym);
       }
     }
@@ -628,7 +639,7 @@
     }
   }
 
-  function openEntry(id) {
+  function openEntry(id, preset) {
     const e = id ? entries().find((x) => x.id === id) : null;
     P.editingId = e ? e.id : null;
     const f = $('#entryForm');
@@ -638,10 +649,11 @@
     $('#deleteEntryBtn').hidden = !e;
     f.date.value = e ? e.date : (isCurrent(P.month) || !P.month ? todayISO() : `${P.month}-${String(daysIn(P.month)).padStart(2, '0')}`);
     f.start.value = e?.start || '';
+    if (preset) { f.start.value = preset.start; f.date.value = preset.end; }
     for (const m of metrics()) f['m_' + m.key].value = e && has(e, m.key) ? e[m.key] : '';
     f.note.value = e?.note || '';
     $('#entryModal').showModal();
-    f['m_' + metrics()[0].key].focus();
+    f['m_' + (preset?.metric || metrics()[0].key)].focus();
   }
 
   async function saveEntry(evt) {
@@ -693,8 +705,38 @@
 
   // ---------- CSV import ----------
   // Columns: Period Start (optional), Period End, one column per metric (named like the metric), Note, Source.
+  // Excel support: a small reader library is bundled in /vendor and loaded only when needed.
+  let xlsxLib;
+  function loadXlsxReader() {
+    xlsxLib ||= new Promise((resolve, reject) => {
+      const sc = document.createElement('script');
+      sc.src = 'vendor/read-excel-file-9.3.12.min.js';
+      sc.onload = () => (window.readXlsxFile ? resolve(window.readXlsxFile) : reject(new Error('Excel reader failed to load')));
+      sc.onerror = () => reject(new Error('Excel reader failed to load'));
+      document.head.appendChild(sc);
+    });
+    return xlsxLib;
+  }
+  const cellText = (v) => {
+    if (v === null || v === undefined) return '';
+    if (v instanceof Date) return `${v.getUTCFullYear()}-${String(v.getUTCMonth() + 1).padStart(2, '0')}-${String(v.getUTCDate()).padStart(2, '0')}`;
+    return String(v);
+  };
+  async function readRows(file) {
+    if (!/\.xlsx$/i.test(file.name)) return parseCSV(await file.text());
+    const read = await loadXlsxReader();
+    const result = await read(file);
+    const sheets = Array.isArray(result) && result.length && result[0] && 'data' in result[0] ? result : [{ sheet: 'Sheet1', data: result }];
+    // Prefer the "Fill In" sheet, else the first sheet that has a Period End column.
+    const hasEnd = (sh) => sh.data.some((r) => r.some((c) => /^period ?end(ing)?$/i.test(cellText(c).trim())));
+    const pickSheet = sheets.find((sh) => /fill ?in/i.test(sh.sheet) && hasEnd(sh)) || sheets.find(hasEnd) || sheets[0];
+    return pickSheet.data.map((r) => r.map(cellText));
+  }
+
   async function importProduction(file) {
-    const rows = parseCSV(await file.text()).filter((r) => r.some((c) => c.trim()));
+    let raw;
+    try { raw = await readRows(file); } catch (e) { return toast(`Couldn't read that file: ${e.message}`, true); }
+    const rows = raw.filter((r) => r.some((c) => c.trim()));
     const norm = (s) => s.toLowerCase().replace(/\(\$\)|\$/g, '').replace(/[^a-z]/g, '');
     const hi = rows.findIndex((r) => r.some((c) => ['periodend', 'periodending', 'date'].includes(norm(c))));
     if (hi === -1) return toast('Could not find a "Period End" column in that CSV', true);
@@ -711,8 +753,11 @@
       for (const [k, i] of mcols) { const v = (r[i] || '').replace(/[$,\s]/g, ''); if (v !== '') e[k] = v; }
       out.push(e);
     }
-    if (!out.length) return toast('No rows with a period end date found', true);
-    if (!confirm(`Import ${out.length} row(s) of production numbers?\n\nRows from an earlier import are replaced. Numbers typed in by hand are kept.`)) return;
+    const filled = out.filter((e) => mcols.some(([k]) => e[k] !== undefined));
+    if (!filled.length) return toast('No numbers found to import. Fill in at least one cell first.', true);
+    out.length = 0; out.push(...filled);
+    const srcs = [...new Set(out.map((e) => e.source))].join(', ');
+    if (!confirm(`Import ${out.length} row(s) of production numbers?\n\nRows imported earlier from the same source (${srcs}) are replaced. Everything else, including numbers typed in by hand, is kept.`)) return;
     try {
       S.data = await api('/api/production/import', { method: 'POST', body: { entries: out, replaceImported: true } });
       P.month = '';
@@ -763,7 +808,15 @@
       store.set('prodRange', P.range);
       render();
     });
-    $('#covTable').addEventListener('click', (e) => { const c = e.target.closest('[data-month]'); if (c) { P.month = c.dataset.month; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
+    $('#covTable').addEventListener('click', (e) => {
+      const cell = e.target.closest('td[data-metric]');
+      if (cell) {
+        const gap = gapSpan(cell.dataset.month, cell.dataset.metric);
+        if (gap) { P.month = cell.dataset.month; render(); openEntry(null, gap); return; }
+      }
+      const c = e.target.closest('[data-month]');
+      if (c) { P.month = c.dataset.month; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    });
     const entryClick = (e) => { const r = e.target.closest('[data-entry]'); if (r) openEntry(r.dataset.entry); };
     $('#entryTable').addEventListener('click', entryClick);
     $('#entryTable').addEventListener('keydown', (e) => { if (e.key === 'Enter') entryClick(e); });

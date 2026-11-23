@@ -20,9 +20,9 @@ A shared, branded task manager for the SFG team. It replaces the "Sibley Financi
 The Production tab is a dashboard for the team meeting:
 
 - **Entering numbers:** before each meeting, click **Enter numbers** and type the totals for the period. Weekly totals work well, for example the week ending Friday; daily totals also work. Add a **Period start** when a total covers more than a week, such as a monthly figure. The metrics are Leads, Appointments Set, Good Connects (connected *and* a qualified opportunity), Qualified Opportunities, Sales, Submitted Business ($) and Paid Business ($). Leave a box blank if you don't track that metric.
-- **Import CSV:** load history in bulk. Use the columns `Period Start, Period End`, one column per metric named like the metric (for example `Good Connects`, `Submitted Business`), then `Note, Source`. Importing again replaces the previously imported rows; numbers typed in by hand are kept. Keep these files out of the repository, because it is public.
+- **Import CSV / Excel:** load history in bulk, or upload the filled-in "Missing Numbers" workbook (the app reads its **Fill In** sheet). Use the columns `Period Start, Period End`, one column per metric named like the metric (for example `Good Connects`, `Submitted Business`), then `Note, Source`. Importing again replaces earlier rows from the same *Source* only; other imports and numbers typed in by hand are kept. Keep these files out of the repository, because it is public.
 - **Partial months are flagged:** the app works out which days each number covers. A month missing early or late days is marked ◐, for example "through 9/21 only", and is never compared as if it were complete.
-- **Missing or incomplete numbers:** a list at the top shows what is missing for the month on screen and the month before. A **Data check** grid shows ✓ / ◐ / ✕ for every metric over the last 12 months.
+- **Missing or incomplete numbers:** a list at the top shows what is missing for the month on screen and the month before. A **Data check** grid shows ✓ / ◐ / ✕ for every metric over the last 12 months. Click a ✕ or ◐ cell to open the entry form already set to the missing days.
 - **Same month last year and year to date:** each metric is compared with last month and with the same month last year, and a year-to-date table compares January through the selected month with the year before.
 - **Monthly totals:** the dashboard adds up each month and compares it with the month before.
 - **Meeting summary:** written automatically, for example "Good Connects: 41 vs 30 in Sep ▲ +37% ✓ Goal of 40 met".
@@ -37,6 +37,16 @@ The Production tab is a dashboard for the team meeting:
 To rename or add metrics, edit `METRICS` in `lib/core.js`.
 
 The app comes pre-loaded with the 12 tasks from the current Google Sheet: 9 open (the "Tasks" tab) and 3 completed (the "Sheet1" tab).
+
+## Giving a teammate access
+
+Nobody needs a GitHub or Netlify account to use the app or update numbers.
+
+1. Send them the site link and the team passcode (the `TEAM_PASSCODE` environment variable in Netlify).
+2. In the app, go to **Settings → Team members** and add their name. They then pick their name in **I am**, so their updates and entries are signed.
+3. To update production numbers they can use **Production → + Enter numbers**, click a red or yellow cell in **Data check**, or **Import CSV / Excel**.
+
+Everyone shares one passcode and has the same access. To revoke access, change `TEAM_PASSCODE` in Netlify and redeploy; everyone then signs in with the new passcode. Only add someone to GitHub (**Settings → Collaborators**) or Netlify (**Team members**) if they need to change the code or the hosting.
 
 ## Run it
 
@@ -116,7 +126,7 @@ Headings use **Cinzel**, a free Google Font close to the logo's classical serif.
 server.js          Node HTTP server (file storage), for Render / Docker / any VPS
 lib/core.js        the API itself, shared by server.js and the Netlify function
 netlify/           Netlify Function wrapper (Netlify Blobs storage) + netlify.toml at the root
-public/            front end (index.html, styles.css, app.js, production.js, brand/)
+public/            front end (index.html, styles.css, app.js, production.js, brand/, vendor/read-excel-file — MIT)
 data/seed.json     initial tasks imported from the Google Sheet
 ```
 
